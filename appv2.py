@@ -39,9 +39,9 @@ fig = go.Figure(data=[go.Sankey(
       pad = 15,
       thickness = 20,
       line = dict(color = "black", width = 0.5),
-      label = years_filtered_unique,
+      label = nodes,
       customdata=nodes,
-      hovertemplate='Season %{customdata} has total value %{value}<extra></extra>',
+      hovertemplate='%{customdata} has a total of %{value} transfers<extra></extra>',
       color = ["orange" if node in ["Bundesliga", "Bayern Múnich", "Borussia Dortmund"] else "white" for node in nodes]
     ),
     link = dict(
@@ -51,7 +51,7 @@ fig = go.Figure(data=[go.Sankey(
       label=df_filtered['Jugador'],
       customdata= df_filtered['Jugador'].unique(),
       hovertemplate = "Season: %{source.customdata}<br>Target: %{target.customdata}<br>Player: %{label}<extra></extra>",
-      color = ["red" if nodes[link['target']] == "Bundesliga" else "gold" for link in links]
+      color = ["brown" if nodes[link['target']] == "Bundesliga" else "orange" for link in links]
     )
 )]
 )
