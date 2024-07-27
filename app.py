@@ -41,6 +41,7 @@ links=links1+links2
 #create a sankey graph. Please assign red as line color for bayern munich and gold as line color for borussia dortmund
 # include player name in hover infobox
 fig = go.Figure(data=[go.Sankey(
+    valueformat=".0f",
     node = dict(
       pad = 15,
       thickness = 20,
@@ -48,7 +49,7 @@ fig = go.Figure(data=[go.Sankey(
       label = nodes,
       customdata=nodes,
       hovertemplate='%{customdata} has a total of %{value} transfers<extra></extra>',
-      color = ["brown" if node == "Bundesliga" else "red" if node =="Bayern Múnich" else "gold" if node == "Borussia Dortmund" else "orange" for node in nodes]
+      color = ["lightcoral" if node == "Bundesliga" else "tomato" if node =="Bayern Múnich" else "goldenrod" if node == "Borussia Dortmund" else "orange" for node in nodes]
     ),
     link = dict(
       source = [link['source'] for link in links],
@@ -57,12 +58,13 @@ fig = go.Figure(data=[go.Sankey(
       label=[nodes[link['player']] for link in links],
       customdata= nodes,
       hovertemplate = "Source: %{source.customdata}<br>Target: %{target.customdata}<br>Player: %{label}<extra></extra>",
-      color = ["brown" if nodes[link['target']] == "Bundesliga" else "red" if nodes[link['target']] == "Bayern Múnich" else "gold" if nodes[link['target']] == "Borussia Dortmund" else "orange" for link in links]
+      color = ["lightcoral" if nodes[link['target']] == "Bundesliga" else "tomato" if nodes[link['target']] == "Bayern Múnich" else "goldenrod" if nodes[link['target']] == "Borussia Dortmund" else "orange" for link in links]
     )
 )]
 )
 
 #make the graph look better by adjusting the font size, title and layout
-fig.update_layout(title_text=f"Flow of Players to Bayern Munich and Borussia Dortmund {year_filter}", font_size=15, title_font_size= 25)
-fig.update_layout(width=1000, height=800)
+fig.update_layout(title="<span style='font-size:22px;color:steelblue;'><b>TRANSFER FLOW TO BAYERN MUNICH AND BORUSSIA DORTMUND</b></span>")
+fig.update_layout(width=1000, height=800, paper_bgcolor="oldlace")
+fig.add_annotation(dict(font=dict(color="steelblue",size=15), x=0.01, y=1, showarrow=False, text=f'DATA FOR {year_filter}'))
 st.plotly_chart(fig)
