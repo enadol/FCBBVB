@@ -18,16 +18,19 @@ else:
     df_filtered = df
 
 player_filtered_unique=list(df_filtered['Jugador'].unique())
+years_filtered_unique=list(df_filtered['Torneo'].unique())
 
 #make nodes and links for a sankey graph to visualize the flow of players to Bayern Munich and Borussia Dortmund
-nodes = list(df_filtered['Liga_origen'].unique()) + list(df_filtered['Club_destino'].unique())+ list(df_filtered['Jugador'].unique())
+nodes = list(df_filtered['Torneo'].unique())+list(df_filtered['Liga_origen'].unique()) + list(df_filtered['Club_destino'].unique())+ list(df_filtered['Jugador'].unique())
 nodes = list(dict.fromkeys(nodes))
 print(len(nodes))
 print(df_filtered['Tipo'].unique())
 
+label=[df_filtered['Jugador']]
+
 links = []
 for index, row in df_filtered.iterrows():
-    links.append({'source': nodes.index(row['Liga_origen']), 'target': nodes.index(row['Club_destino']), 'player': nodes.index(row['Jugador']), 'value': 1})
+    links.append({'source': nodes.index(row['Torneo']), 'target': nodes.index(row['Liga_origen']), 'player': nodes.index(row['Jugador']), 'destination': nodes.index(row['Club_destino']), 'value': 1})
 print(len(links))
 #create a sankey graph. Please assign red as line color for bayern munich and gold as line color for borussia dortmund
 # include player name in hover infobox
@@ -36,9 +39,9 @@ fig = go.Figure(data=[go.Sankey(
       pad = 15,
       thickness = 20,
       line = dict(color = "black", width = 0.5),
-      label = nodes,
+      label = years_filtered_unique,
       customdata=nodes,
-      hovertemplate='%{customdata} has %{value} transfers<extra></extra>',
+      hovertemplate='Season %{customdata} has total value %{value}<extra></extra>',
       color = ["orange" if node in ["Bundesliga", "Bayern Múnich", "Borussia Dortmund"] else "white" for node in nodes]
     ),
     link = dict(
@@ -47,8 +50,8 @@ fig = go.Figure(data=[go.Sankey(
       value = [link['value'] for link in links],
       label=df_filtered['Jugador'],
       customdata= df_filtered['Jugador'].unique(),
-      hovertemplate = "Source league: %{source.customdata}<br>Target club: %{target.customdata}<br>Player: %{label}<extra></extra>",
-      color = ["red" if nodes[link['target']] == "Bayern Múnich" else "gold" for link in links]
+      hovertemplate = "Season: %{source.customdata}<br>Target: %{target.customdata}<br>Player: %{label}<extra></extra>",
+      color = ["red" if nodes[link['target']] == "Bundesliga" else "gold" for link in links]
     )
 )]
 )
