@@ -2,7 +2,6 @@
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-import openpyxl
 # read xlsx file in this work directory
 df = pd.read_excel('bayern-bvb-fichajes-filtro@3.xlsx')
 print(df.columns)
@@ -19,17 +18,26 @@ else:
     df_filtered = df
 
 player_filtered_unique=list(df_filtered['Jugador'].unique())
+years_filtered_unique=list(df_filtered['Torneo'].unique())
 
 #make nodes and links for a sankey graph to visualize the flow of players to Bayern Munich and Borussia Dortmund
-nodes = list(df_filtered['Liga_origen'].unique()) + list(df_filtered['Club_destino'].unique())+ list(df_filtered['Jugador'].unique())
+nodes = list(df_filtered['Torneo'].unique())+list(df_filtered['Liga_origen'].unique()) + list(df_filtered['Club_destino'].unique())+ list(df_filtered['Jugador'].unique())
 nodes = list(dict.fromkeys(nodes))
 print(len(nodes))
 print(df_filtered['Tipo'].unique())
 
-links = []
+label=[df_filtered['Jugador']]
+
+links1 = []
 for index, row in df_filtered.iterrows():
-    links.append({'source': nodes.index(row['Liga_origen']), 'target': nodes.index(row['Club_destino']), 'player': nodes.index(row['Jugador']), 'value': 1})
-print(len(links))
+    links1.append({'source': nodes.index(row['Torneo']), 'target': nodes.index(row['Liga_origen']), 'player': nodes.index(row['Jugador']),'value': 1})
+
+links2=[]
+for index, row in df_filtered.iterrows():
+    links2.append({'source': nodes.index(row['Liga_origen']), 'target': nodes.index(row['Club_destino']), 'player': nodes.index(row['Jugador']), 'value': 1}) 
+
+links=links1+links2
+
 #create a sankey graph. Please assign red as line color for bayern munich and gold as line color for borussia dortmund
 # include player name in hover infobox
 fig = go.Figure(data=[go.Sankey(
@@ -39,17 +47,17 @@ fig = go.Figure(data=[go.Sankey(
       line = dict(color = "black", width = 0.5),
       label = nodes,
       customdata=nodes,
-      hovertemplate='%{customdata} has %{value} transfers<extra></extra>',
-      color = ["orange" if node in ["Bundesliga", "Bayern Múnich", "Borussia Dortmund"] else "white" for node in nodes]
+      hovertemplate='%{customdata} has a total of %{value} transfers<extra></extra>',
+      color = ["brown" if node == "Bundesliga" else "red" if node =="Bayern Múnich" else "gold" if node == "Borussia Dortmund" else "orange" for node in nodes]
     ),
     link = dict(
       source = [link['source'] for link in links],
       target = [link['target'] for link in links],
       value = [link['value'] for link in links],
-      label=df_filtered['Jugador'],
-      customdata= df_filtered['Jugador'].unique(),
-      hovertemplate = "Source league: %{source.customdata}<br>Target club: %{target.customdata}<br>Player: %{label}<extra></extra>",
-      color = ["red" if nodes[link['target']] == "Bayern Múnich" else "gold" for link in links]
+      label=[nodes[link['player']] for link in links],
+      customdata= nodes,
+      hovertemplate = "Source: %{source.customdata}<br>Target: %{target.customdata}<br>Player: %{label}<extra></extra>",
+      color = ["brown" if nodes[link['target']] == "Bundesliga" else "red" if nodes[link['target']] == "Bayern Múnich" else "gold" if nodes[link['target']] == "Borussia Dortmund" else "orange" for link in links]
     )
 )]
 )
