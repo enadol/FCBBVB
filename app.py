@@ -49,7 +49,7 @@ fig = go.Figure(data=[go.Sankey(
       label = nodes,
       customdata=nodes,
       hovertemplate='%{customdata} has a total of %{value} transfers<extra></extra>',
-      color = ["lightcoral" if node == "Bundesliga" else "tomato" if node =="Bayern Múnich" else "goldenrod" if node == "Borussia Dortmund" else "orange" for node in nodes]
+      color = ["lightcoral" if node == "Bundesliga" else "tomato" if node =="Bayern Múnich" else "goldenrod" if node == "Borussia Dortmund" else "steelblue" for node in nodes]
     ),
     link = dict(
       source = [link['source'] for link in links],
@@ -58,7 +58,7 @@ fig = go.Figure(data=[go.Sankey(
       label=[nodes[link['player']] for link in links],
       customdata= nodes,
       hovertemplate = "Source: %{source.customdata}<br>Target: %{target.customdata}<br>Player: %{label}<extra></extra>",
-      color = ["lightcoral" if nodes[link['target']] == "Bundesliga" else "tomato" if nodes[link['target']] == "Bayern Múnich" else "goldenrod" if nodes[link['target']] == "Borussia Dortmund" else "orange" for link in links]
+      color = ["lightcoral" if nodes[link['target']] == "Bundesliga" else "tomato" if nodes[link['target']] == "Bayern Múnich" else "goldenrod" if nodes[link['target']] == "Borussia Dortmund" else "steelblue" for link in links]
     )
 )]
 )
