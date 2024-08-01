@@ -1,6 +1,5 @@
 #import pandas
 import pandas as pd
-import streamlit as st
 import plotly.graph_objects as go
 # read xlsx file in this work directory
 df = pd.read_excel('bayern-bvb-fichajes-filtro@3.xlsx')
