@@ -38,7 +38,7 @@ for index, row in df_filtered.iterrows():
 
 links3=[]
 for index, row in df_filtered.iterrows():
-    links3.append({'source': nodes.index(row['Liga_origen']), 'target': nodes.index(row['Club_destino']), 'player': nodes.index(row['Jugador']), 'value': 1}) 
+    links3.append({'source': nodes.index(row['Liga_destino']), 'target': nodes.index(row['Club_destino']), 'player': nodes.index(row['Jugador']), 'value': 1}) 
 
 
 
