@@ -1,9 +1,12 @@
+"""Import necessary packages"""
 #import pandas
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
 st.set_page_config(layout="wide")
+st.markdown('<style>' + open('style.css', encoding='utf-8').read() + \
+            '</style>', unsafe_allow_html=True)
 
 # read xlsx file in this work directory
 df = pd.read_excel('bayern-bvb-fichajes-filtro@3.xlsx')
@@ -23,8 +26,12 @@ else:
 player_filtered_unique=list(df_filtered['Jugador'].unique())
 years_filtered_unique=list(df_filtered['Torneo'].unique())
 
-#make nodes and links for a sankey graph to visualize the flow of players to Bayern Munich and Borussia Dortmund
-nodes = list(df_filtered['Torneo'].unique())+list(df_filtered['Liga_origen'].unique()) + list(df_filtered['Club_destino'].unique())+ list(df_filtered['Jugador'].unique())
+#make nodes and links for a sankey graph to visualize the
+# flow of players to Bayern Munich and Borussia Dortmund
+nodes = list(df_filtered['Torneo'].unique())+ \
+    list(df_filtered['Liga_origen'].unique()) + \
+    list(df_filtered['Club_destino'].unique())+ \
+        list(df_filtered['Jugador'].unique())
 nodes = list(dict.fromkeys(nodes))
 print(len(nodes))
 print(df_filtered['Tipo'].unique())
@@ -33,15 +40,20 @@ label=[df_filtered['Jugador']]
 
 links1 = []
 for index, row in df_filtered.iterrows():
-    links1.append({'source': nodes.index(row['Torneo']), 'target': nodes.index(row['Liga_origen']), 'player': nodes.index(row['Jugador']),'value': 1})
+    links1.append({'source': nodes.index(row['Torneo']), \
+    'target': nodes.index(row['Liga_origen']), \
+    'player': nodes.index(row['Jugador']),'value': 1})
 
 links2=[]
 for index, row in df_filtered.iterrows():
-    links2.append({'source': nodes.index(row['Liga_origen']), 'target': nodes.index(row['Club_destino']), 'player': nodes.index(row['Jugador']), 'value': 1}) 
+    links2.append({'source': nodes.index(row['Liga_origen']), \
+    'target': nodes.index(row['Club_destino']), \
+    'player': nodes.index(row['Jugador']), 'value': 1}) 
 
 links=links1+links2
 
-#create a sankey graph. Please assign red as line color for bayern munich and gold as line color for borussia dortmund
+#create a sankey graph. Please assign red as line color for
+# bayern munich and gold as line color for borussia dortmund
 # include player name in hover infobox
 fig = go.Figure(data=[go.Sankey(
     valueformat=".0f",
@@ -52,7 +64,9 @@ fig = go.Figure(data=[go.Sankey(
       label = nodes,
       customdata=nodes,
       hovertemplate='%{customdata} has a total of %{value} transfers<extra></extra>',
-      color = ["lightcoral" if node == "Bundesliga" else "tomato" if node =="Bayern Múnich" else "goldenrod" if node == "Borussia Dortmund" else "steelblue" for node in nodes]
+      color = ["lightcoral" if node == "Bundesliga" else "tomato" \
+        if node =="Bayern Múnich" else "goldenrod" if node == \
+        "Borussia Dortmund" else "steelblue" for node in nodes]
     ),
     link = dict(
       source = [link['source'] for link in links],
@@ -60,14 +74,20 @@ fig = go.Figure(data=[go.Sankey(
       value = [link['value'] for link in links],
       label=[nodes[link['player']] for link in links],
       customdata= nodes,
-      hovertemplate = "Source: %{source.customdata}<br>Target: %{target.customdata}<br>Player: %{label}<extra></extra>",
-      color = ["lightcoral" if nodes[link['target']] == "Bundesliga" else "tomato" if nodes[link['target']] == "Bayern Múnich" else "goldenrod" if nodes[link['target']] == "Borussia Dortmund" else "steelblue" for link in links]
+      hovertemplate = "Source: %{source.customdata}<br>Target: \
+        %{target.customdata}<br>Player: %{label}<extra></extra>",
+      color = ["lightcoral" if nodes[link['target']] == \
+    "Bundesliga" else "tomato" if nodes[link['target']] == \
+    "Bayern Múnich" else "goldenrod" if nodes[link['target']] == \
+    "Borussia Dortmund" else "steelblue" for link in links]
     )
 )]
 )
-
 #make the graph look better by adjusting the font size, title and layout
-fig.update_layout(title="<span style='font-size:22px;color:steelblue;'><b>TRANSFER FLOW TO BAYERN MUNICH AND BORUSSIA DORTMUND</b></span>")
+fig.update_layout(title="<span style='font-size:22px;\
+    color:steelblue;'><b>TRANSFER FLOW TO BAYERN MUNICH \
+    AND BORUSSIA DORTMUND</b></span>")
 fig.update_layout(width=1000, height=800, paper_bgcolor="oldlace")
-fig.add_annotation(dict(font=dict(color="steelblue",size=15), x=0.01, y=1, showarrow=False, text=f'DATA FOR {year_filter}'))
+fig.add_annotation(dict(font=dict(color="steelblue",size=15), \
+    x=0.01, y=1, showarrow=False, text=f'DATA FOR {year_filter}'))
 st.plotly_chart(fig)
