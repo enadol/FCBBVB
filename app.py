@@ -5,8 +5,6 @@ import plotly.graph_objects as go
 import streamlit as st
 
 st.set_page_config(layout="wide")
-st.markdown('<style>' + open('style.css', encoding='utf-8').read() + \
-            '</style>', unsafe_allow_html=True)
 
 # read xlsx file in this work directory
 df = pd.read_excel('bayern-bvb-fichajes-filtro@3.xlsx')
@@ -80,7 +78,8 @@ fig = go.Figure(data=[go.Sankey(
     "Bundesliga" else "tomato" if nodes[link['target']] == \
     "Bayern Múnich" else "goldenrod" if nodes[link['target']] == \
     "Borussia Dortmund" else "steelblue" for link in links]
-    )
+    ),
+    textfont=dict(size=12, color="steelblue"),
 )]
 )
 #make the graph look better by adjusting the font size, title and layout
